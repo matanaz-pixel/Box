@@ -1,0 +1,98 @@
+<!doctype html>
+<html lang="he" dir="rtl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#f7f6f1">
+<title>BOX — קופסת אוכל</title>
+<style>
+*{box-sizing:border-box}body{margin:0;background:#dfe1dc;font-family:Arial,"Noto Sans Hebrew",sans-serif;color:#20231f}
+.app{width:min(100%,430px);min-height:100vh;margin:auto;background:#f7f6f1;position:relative;padding-bottom:82px}
+.top{padding:18px 18px 10px;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;background:#f7f6f1ee;backdrop-filter:blur(10px);z-index:5}.brand{font-size:24px;font-weight:900}.child{background:#ead8d0;border-radius:99px;padding:9px 13px;font-weight:700}
+main{padding:8px 18px}.view{display:none}.view.active{display:block}
+h1{font-size:30px;line-height:1.08;margin:12px 0 6px}h2{font-size:20px;margin:8px 0}.muted{color:#747873;font-size:14px;line-height:1.45}
+.card{background:#fff;border:1px solid #e7e7e0;border-radius:24px;padding:16px;margin:13px 0;box-shadow:0 5px 18px #00000008}
+.photo{height:190px;border-radius:20px;background:linear-gradient(135deg,#e5efe4,#fff0dc);display:grid;place-items:center;font-size:65px}
+.pills{display:flex;flex-wrap:wrap;gap:7px;margin:12px 0}.pill{padding:8px 11px;border-radius:999px;background:#f0f2ed;font-size:13px}
+button{font:inherit;border:0;cursor:pointer;border-radius:15px;padding:13px 15px;background:#eceee9;color:#20231f;font-weight:700}.primary{background:#20231f;color:#fff;width:100%}.stack{display:grid;gap:9px}.ghost{background:transparent;border:1px solid #e1e2dc}
+.nav{position:fixed;bottom:0;left:50%;transform:translateX(-50%);width:min(430px,100%);height:76px;background:#fffffff2;border-top:1px solid #e3e4de;display:flex;justify-content:space-around;align-items:center;z-index:20}.nav button{background:transparent;padding:6px 9px;font-size:11px}.nav b{display:block;font-size:21px;margin-bottom:2px}
+.grid{display:grid;grid-template-columns:repeat(2,1fr);gap:10px}.choice{background:#fff;border:2px solid #e5e6df;min-height:82px}.choice.sel{border-color:#df8c73;background:#fff5f0}.choice strong{display:block;font-size:25px;margin-bottom:4px}
+input{width:100%;border:1px solid #dedfd8;border-radius:15px;padding:14px;font-size:16px;margin:6px 0 14px;background:#fff}
+.progress{height:7px;background:#e7e8e2;border-radius:20px;overflow:hidden}.progress i{display:block;height:100%;background:#df8c73}
+.step{display:flex;gap:11px;align-items:flex-start;padding:14px 0;border-bottom:1px solid #ecece6}.step:last-child{border:0}.num{width:30px;height:30px;flex:none;border-radius:50%;background:#eff1ec;display:grid;place-items:center;font-weight:800}.step button{margin-right:auto;padding:7px 10px}
+.weekrow{display:flex;gap:10px;align-items:center;padding:13px 0;border-bottom:1px solid #ecece6}.day{width:31px;height:31px;border-radius:50%;background:#eff1ec;display:grid;place-items:center;font-weight:800;flex:none}
+.toast{position:fixed;bottom:92px;left:50%;transform:translateX(-50%);background:#20231f;color:#fff;border-radius:14px;padding:12px 16px;display:none;z-index:50;width:calc(100% - 36px);text-align:center;font-size:14px}
+.modal{position:fixed;inset:0;background:#0006;display:none;align-items:flex-end;z-index:40}.sheet{background:#f7f6f1;width:min(430px,100%);margin:auto;border-radius:28px 28px 0 0;padding:20px;max-height:84vh;overflow:auto}
+.ob .nav{display:none}.ob .app{padding-bottom:20px}
+.safe{background:#fff7e0;border:1px solid #f0dca0;border-radius:16px;padding:10px 12px;margin:10px 0;font-size:13px;line-height:1.5}
+.warn{background:#ffeceb;border:1px solid #f1c3bf;border-radius:16px;padding:10px 12px;margin:10px 0;font-size:13px;line-height:1.5}
+.chips{display:flex;flex-wrap:wrap;gap:8px;margin:10px 0}.chips .chip{padding:9px 14px;border-radius:99px;background:#eceee9}.chips .chip.sel{background:#ead8d0;outline:2px solid #df8c73}
+label{display:block;font-size:13px;color:#747873}.small{font-size:12px}.danger{background:#fbe3e0;color:#8a2a22}
+.alt{width:100%;text-align:right;margin-top:8px;background:#fff;border:1px solid #e5e6df}.alt small{display:block;font-weight:400;color:#747873;margin-top:3px}
+.badge{font-size:12px;background:#e5f2e8;border-radius:999px;padding:5px 8px}
+</style>
+</head>
+<body>
+<div class="app">
+<div class="top"><div class="brand">BOX</div><button class="child" id="childBadge" onclick="show('profile')">🧒</button></div>
+
+<main>
+<section id="home" class="view active"></section>
+
+<section id="prepare" class="view"></section>
+
+<section id="build" class="view">
+<h1>🆘 בנה לי ממה שיש</h1><p class="muted">סמנו כמה מצרכים שיש לכם. לא חייבים לנהל מלאי.</p>
+<div class="card"><div class="grid" id="ingredients"></div>
+<input id="free" placeholder="או כתבו חופשי: ביצים, גבינה, פסטה...">
+<button class="primary" onclick="buildPantry()">בנה לי קופסה</button></div>
+<div id="result"></div>
+</section>
+
+<section id="week" class="view">
+<h1>📅 השבוע</h1><p class="muted" id="weekFor">הצעה גמישה. אפשר לשנות כל יום.</p>
+<div class="card" id="weekList"></div>
+<button class="primary" onclick="newWeek()">✨ בנה לי שבוע חדש</button>
+</section>
+
+<section id="profile" class="view">
+<h1>👨‍👩‍👧 הילדים</h1>
+<div class="chips" id="childChips"></div>
+<div id="profileBody"></div>
+</section>
+
+<section id="onboard" class="view">
+<div class="progress"><i id="bar" style="width:20%"></i></div>
+<div id="ob1">
+<h1 id="obTitle">למי מכינים?</h1><p class="muted">שם ותאריך לידה. הגיל קובע איך מגישים כל מזון (למשל ענבים לילד קטן).</p>
+<label for="name">שם</label><input id="name" placeholder="שם הילד/ה">
+<label for="birth">תאריך לידה</label><input id="birth" type="date">
+<button class="primary" onclick="obNext(1)">המשך</button>
+<button class="ghost" id="obCancel" style="margin-top:8px;width:100%" onclick="obCancel()">ביטול</button>
+</div>
+<div id="ob2" style="display:none"><h1>מה אוהבים?</h1><p class="muted">אפשר לבחור כמה.</p><div class="grid" id="prefgrid"></div><button class="primary" style="margin-top:10px" onclick="obNext(2)">המשך</button></div>
+<div id="ob3" style="display:none"><h1>מה חסום?</h1><p class="muted">אלרגיה, איסור בגן או "לא להציע". אפשר להקליד מזון (ביצים) או קבוצה (גלוטן, חלב, בוטנים, אגוזים, דגים, שומשום).</p><div class="card"><div class="pills" id="obBlocked"></div><input id="blockInput" placeholder="למשל: בוטנים"><button class="ghost" onclick="addBlock('blockInput',true)">＋ הוסף חסימה</button></div><button class="primary" style="margin-top:10px" onclick="obNext(3)">המשך</button></div>
+<div id="ob4" style="display:none"><h1>איזו קופסה?</h1><p class="muted">החלוקה היא פיזית, לא נוסחה תזונתית. בקופסה של תא אחד נציע רק מנות שאפשר לערבב.</p><div class="grid" id="boxgrid"></div><button class="primary" style="margin-top:10px" onclick="obNext(4)">המשך</button></div>
+<div id="ob5" style="display:none"><h1>מה הכי חשוב?</h1><p class="muted">אפשר לבחור עד 3. אפשר לשנות אחר כך.</p><div class="grid" id="goalgrid"></div><button class="primary" style="margin-top:10px" onclick="obNext(5)">סיימנו</button></div>
+<button class="ghost" id="obSave" style="display:none;width:100%;margin-top:10px" onclick="obFinish()">שמור וסיים</button>
+</section>
+</main>
+
+<div class="nav">
+<button onclick="show('home')"><b>🍱</b>היום</button>
+<button onclick="show('week')"><b>📅</b>שבוע</button>
+<button onclick="show('build')"><b>🆘</b>בנה</button>
+<button onclick="show('profile')"><b>👨‍👩‍👧</b>ילדים</button>
+</div>
+<div id="toast" class="toast"></div>
+<div id="modal" class="modal" onclick="if(event.target===this)closeModal()"><div class="sheet">
+<h2>↻ מה להחליף?</h2><p class="muted">חלופות שמתאימות לילד/ה, לחסימות ולגיל.</p>
+<div id="altList"></div>
+<button class="primary" style="margin-top:12px" onclick="closeModal()">סגור</button></div></div>
+<script src="data/recipes.js"></script>
+<script src="data/safety.js"></script>
+<script src="engine.js"></script>
+<script src="app.js"></script>
+</div>
+</body>
+</html>
