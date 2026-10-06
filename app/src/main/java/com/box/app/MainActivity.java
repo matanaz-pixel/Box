@@ -27,7 +27,8 @@ public class MainActivity extends Activity {
     }
     @Override public void onBackPressed() {
         // Let the web app handle Back (e.g. return to the home view) before exiting.
-        web.evaluateJavascript("(function(){var h=document.getElementById('home');if(h&&!h.classList.contains('active')){show('home');return true}return false})()",
+        // boxBack() מוגדר ב-app.js ומחזיר true אם ה-web טיפל בכפתור (חזרה למסך הבית, סגירת חלון וכו').
+        web.evaluateJavascript("(typeof boxBack==='function')?boxBack():false",
             v -> { if (!"true".equals(v)) super.onBackPressed(); });
     }
 }

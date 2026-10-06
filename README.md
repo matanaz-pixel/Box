@@ -11,3 +11,9 @@ This project wraps the current BOX web prototype in a native Android WebView app
 6. Unzip it and install `app-debug.apk` on Android.
 
 The app currently works fully offline because the prototype is bundled inside the APK. No API keys are stored in the app.
+
+## Structure
+- `app/src/main/assets/www/index.html` + `app.js` — UI (multiple children, today / week / build-from-pantry / profile).
+- `engine.js` — recommendation engine (blocks, age-based safety, box fit, preferences, variety). Pure functions, testable in Node.
+- `data/recipes.js` — meal database. Add or edit meals here.
+- `data/safety.js` — age-based food safety rules (data, not code). General guidance only — not medical or dietary advice.

@@ -23,75 +23,58 @@ input{width:100%;border:1px solid #dedfd8;border-radius:15px;padding:14px;font-s
 .weekrow{display:flex;gap:10px;align-items:center;padding:13px 0;border-bottom:1px solid #ecece6}.day{width:31px;height:31px;border-radius:50%;background:#eff1ec;display:grid;place-items:center;font-weight:800;flex:none}
 .toast{position:fixed;bottom:92px;left:50%;transform:translateX(-50%);background:#20231f;color:#fff;border-radius:14px;padding:12px 16px;display:none;z-index:50;width:calc(100% - 36px);text-align:center;font-size:14px}
 .modal{position:fixed;inset:0;background:#0006;display:none;align-items:flex-end;z-index:40}.sheet{background:#f7f6f1;width:min(430px,100%);margin:auto;border-radius:28px 28px 0 0;padding:20px;max-height:84vh;overflow:auto}
+.ob .nav{display:none}.ob .app{padding-bottom:20px}
+.safe{background:#fff7e0;border:1px solid #f0dca0;border-radius:16px;padding:10px 12px;margin:10px 0;font-size:13px;line-height:1.5}
+.warn{background:#ffeceb;border:1px solid #f1c3bf;border-radius:16px;padding:10px 12px;margin:10px 0;font-size:13px;line-height:1.5}
+.chips{display:flex;flex-wrap:wrap;gap:8px;margin:10px 0}.chips .chip{padding:9px 14px;border-radius:99px;background:#eceee9}.chips .chip.sel{background:#ead8d0;outline:2px solid #df8c73}
+label{display:block;font-size:13px;color:#747873}.small{font-size:12px}.danger{background:#fbe3e0;color:#8a2a22}
+.alt{width:100%;text-align:right;margin-top:8px;background:#fff;border:1px solid #e5e6df}.alt small{display:block;font-weight:400;color:#747873;margin-top:3px}
 .badge{font-size:12px;background:#e5f2e8;border-radius:999px;padding:5px 8px}
 </style>
 </head>
 <body>
 <div class="app">
-<div class="top"><div class="brand">BOX</div><div class="child" id="childBadge">👧 נועה</div></div>
+<div class="top"><div class="brand">BOX</div><button class="child" id="childBadge" onclick="show('profile')">🧒</button></div>
 
 <main>
-<section id="home" class="view active">
-<p class="muted">בוקר טוב 👋</p><h1>הקופסה של היום</h1>
-<div class="card">
-<div class="photo">🍝🥒🍇</div>
-<h2>פסטה + גבינה · מלפפון · ענבים</h2>
-<div class="pills"><span class="pill">⏱️ 6 דקות</span><span class="pill">❤️ דברים שאוהבים</span><span class="pill">🥦 ירק</span></div>
-<p class="muted">המלצה שנבנתה לפי ההעדפות, הזמן והקופסה שלך. זו לא "נוסחה" — אלא שילוב פרקטי ומגוון.</p>
-<div class="stack">
-<button class="primary" onclick="show('prepare')">מתחילים להכין</button>
-<button onclick="openModal()">↻ החלף משהו</button>
-<button onclick="show('build')">🆘 בנה לי ממה שיש</button>
-</div>
-</div>
-<div class="card"><h2>✨ עוד רעיונות</h2><div class="grid">
-<button class="choice" onclick="choose('חביתה בפיתה + גזר + תותים',['ביצה','פיתה','גזר','תותים'])"><strong>🥚</strong>חביתה בפיתה</button>
-<button class="choice" onclick="choose('קציצות טונה + בטטה + שעועית',['טונה','בטטה','שעועית'])"><strong>🐟</strong>קציצות טונה</button>
-</div></div>
-</section>
+<section id="home" class="view active"></section>
 
-<section id="prepare" class="view">
-<h1>מכינים את הקופסה</h1><p class="muted">המטרה: כמה שפחות לחשוב.</p>
-<div class="card" id="steps">
-<div class="step"><div class="num">1</div><div><b>פסטה + גבינה</b><br><span class="muted">השתמשו במה שכבר מוכן, אם יש.</span></div><button onclick="complete(this)">✓</button></div>
-<div class="step"><div class="num">2</div><div><b>הוסיפו גבינה</b><br><span class="muted">אפשר להוסיף טונה אם בחרתם בה.</span></div><button onclick="complete(this)">✓</button></div>
-<div class="step"><div class="num">3</div><div><b>מלפפון</b><br><span class="muted">הגישו בצורה שמתאימה לגיל וליכולת האכילה.</span></div><button onclick="complete(this)">✓</button></div>
-<div class="step"><div class="num">4</div><div><b>ענבים</b><br><span class="muted">יש לפעול לפי הנחיות בטיחות מתאימות לגיל.</span></div><button onclick="complete(this)">✓</button></div>
-</div>
-<button class="primary" onclick="toast('נשמר ✓ הקופסה מוכנה')">הקופסה מוכנה ✓</button>
-</section>
+<section id="prepare" class="view"></section>
 
 <section id="build" class="view">
 <h1>🆘 בנה לי ממה שיש</h1><p class="muted">סמנו כמה מצרכים שיש לכם. לא חייבים לנהל מלאי.</p>
 <div class="card"><div class="grid" id="ingredients"></div>
 <input id="free" placeholder="או כתבו חופשי: ביצים, גבינה, פסטה...">
-<button class="primary" onclick="build()">בנה לי קופסה</button></div>
+<button class="primary" onclick="buildPantry()">בנה לי קופסה</button></div>
 <div id="result"></div>
 </section>
 
 <section id="week" class="view">
-<h1>📅 השבוע</h1><p class="muted">הצעה גמישה. אפשר לשנות כל יום.</p>
+<h1>📅 השבוע</h1><p class="muted" id="weekFor">הצעה גמישה. אפשר לשנות כל יום.</p>
 <div class="card" id="weekList"></div>
-<button class="primary" onclick="toast('השבוע עודכן לפי ההעדפות והגיוון')">✨ בנה לי שבוע חדש</button>
+<button class="primary" onclick="newWeek()">✨ בנה לי שבוע חדש</button>
 </section>
 
 <section id="profile" class="view">
-<h1>👧 פרופיל הילד</h1>
-<div class="card"><h2>❤️ אוהב/ת</h2><div class="pills" id="likesList"></div><button class="ghost" onclick="show('onboard');ob(2)">עריכה</button></div>
-<div class="card"><h2>🛡️ בטיחות וחסימות</h2><p class="muted">מזונות חסומים לא יוצעו בהחלפות, ברעיונות ובבניית קופסה. הקשה על ✕ מסירה חסימה.</p><div class="pills" id="blockedList"></div><input id="blockInput2" placeholder="הוסיפו אלרגיה או חסימה"><button class="ghost" onclick="addBlock('blockInput2')">＋ הוסף חסימה</button></div>
-<div class="card"><h2>❄️ המקפיא שלי</h2><p class="muted">אופציונלי. מספיק לכתוב "בערך 6 קציצות".</p><button class="ghost" onclick="toast('נוסף: קציצות טונה · בערך 6')">＋ הוסף הכנה</button></div>
+<h1>👨‍👩‍👧 הילדים</h1>
+<div class="chips" id="childChips"></div>
+<div id="profileBody"></div>
 </section>
 
 <section id="onboard" class="view">
 <div class="progress"><i id="bar" style="width:20%"></i></div>
 <div id="ob1">
-<h1>למי מכינים?</h1><p class="muted">רק כמה פרטים. מה שאפשר ללמוד אחר כך — נשאיר לאחר כך.</p>
-<label>שם</label><input id="name" value="נועה"><label>תאריך לידה</label><input type="date"><button class="primary" onclick="ob(2)">המשך</button>
+<h1 id="obTitle">למי מכינים?</h1><p class="muted">שם ותאריך לידה. הגיל קובע איך מגישים כל מזון (למשל ענבים לילד קטן).</p>
+<label for="name">שם</label><input id="name" placeholder="שם הילד/ה">
+<label for="birth">תאריך לידה</label><input id="birth" type="date">
+<button class="primary" onclick="obNext(1)">המשך</button>
+<button class="ghost" id="obCancel" style="margin-top:8px;width:100%" onclick="obCancel()">ביטול</button>
 </div>
-<div id="ob2" style="display:none"><h1>מה אוהבים?</h1><p class="muted">אפשר לבחור כמה.</p><div class="grid" id="prefgrid"></div><button class="primary" onclick="ob(3)">המשך</button></div>
-<div id="ob3" style="display:none"><h1>מה חסום?</h1><p class="muted">אלרגיה, איסור בגן או "לא להציע".</p><div class="card"><div class="pills" id="obBlocked"></div><input id="blockInput" placeholder="למשל: בוטנים"><button class="ghost" onclick="addBlock('blockInput')">＋ הוסף חסימה</button></div><button class="primary" style="margin-top:10px" onclick="ob(4)">המשך</button></div>
-<div id="ob4" style="display:none"><h1>איזו קופסה?</h1><p class="muted">החלוקה היא פיזית, לא נוסחה תזונתית.</p><div class="grid"><button class="choice sel" onclick="pick(this)">▯<br>תא אחד</button><button class="choice" onclick="pick(this)">▯▯▯<br>3 תאים</button><button class="choice" onclick="pick(this)">▯▯▯▯<br>4 תאים</button></div><button class="primary" style="margin-top:10px" onclick="ob(5)">המשך</button></div>
-<div id="ob5" style="display:none"><h1>מה הכי חשוב?</h1><p class="muted">אפשר לבחור עד 3. אפשר לשנות אחר כך.</p><div class="grid" id="goalgrid"></div><button class="primary" onclick="finish()">סיימנו</button></div>
+<div id="ob2" style="display:none"><h1>מה אוהבים?</h1><p class="muted">אפשר לבחור כמה.</p><div class="grid" id="prefgrid"></div><button class="primary" style="margin-top:10px" onclick="obNext(2)">המשך</button></div>
+<div id="ob3" style="display:none"><h1>מה חסום?</h1><p class="muted">אלרגיה, איסור בגן או "לא להציע". אפשר להקליד מזון (ביצים) או קבוצה (גלוטן, חלב, בוטנים, אגוזים, דגים, שומשום).</p><div class="card"><div class="pills" id="obBlocked"></div><input id="blockInput" placeholder="למשל: בוטנים"><button class="ghost" onclick="addBlock('blockInput',true)">＋ הוסף חסימה</button></div><button class="primary" style="margin-top:10px" onclick="obNext(3)">המשך</button></div>
+<div id="ob4" style="display:none"><h1>איזו קופסה?</h1><p class="muted">החלוקה היא פיזית, לא נוסחה תזונתית. בקופסה של תא אחד נציע רק מנות שאפשר לערבב.</p><div class="grid" id="boxgrid"></div><button class="primary" style="margin-top:10px" onclick="obNext(4)">המשך</button></div>
+<div id="ob5" style="display:none"><h1>מה הכי חשוב?</h1><p class="muted">אפשר לבחור עד 3. אפשר לשנות אחר כך.</p><div class="grid" id="goalgrid"></div><button class="primary" style="margin-top:10px" onclick="obNext(5)">סיימנו</button></div>
+<button class="ghost" id="obSave" style="display:none;width:100%;margin-top:10px" onclick="obFinish()">שמור וסיים</button>
 </section>
 </main>
 
@@ -99,87 +82,17 @@ input{width:100%;border:1px solid #dedfd8;border-radius:15px;padding:14px;font-s
 <button onclick="show('home')"><b>🍱</b>היום</button>
 <button onclick="show('week')"><b>📅</b>שבוע</button>
 <button onclick="show('build')"><b>🆘</b>בנה</button>
-<button onclick="show('profile')"><b>👧</b>פרופיל</button>
+<button onclick="show('profile')"><b>👨‍👩‍👧</b>ילדים</button>
 </div>
 <div id="toast" class="toast"></div>
 <div id="modal" class="modal" onclick="if(event.target===this)closeModal()"><div class="sheet">
-<h2>↻ מה להחליף?</h2><p class="muted">החלפה שמתחשבת בשאר הקופסה.</p>
-<div class="grid"><button onclick="swap('🐟 קציצת טונה',['טונה'])">🐟 קציצת טונה<br><small>מהמקפיא</small></button><button onclick="swap('🥚 ביצה',['ביצה'])">🥚 ביצה<br><small>מהיר</small></button><button onclick="swap('🧀 גבינה',['גבינה'])">🧀 גבינה<br><small>בלי בישול</small></button><button onclick="swap('🍗 לביבת עוף',['עוף'])">🍗 לביבת עוף<br><small>הכנה מראש</small></button></div>
+<h2>↻ מה להחליף?</h2><p class="muted">חלופות שמתאימות לילד/ה, לחסימות ולגיל.</p>
+<div id="altList"></div>
 <button class="primary" style="margin-top:12px" onclick="closeModal()">סגור</button></div></div>
-<script>
-const foods=[['🥚','ביצים'],['🧀','גבינה'],['🍝','פסטה'],['🥒','מלפפון'],['🍇','ענבים'],['🌽','תירס'],['🫘','שעועית'],['🍠','בטטה']];
-const prefs=[['🍝','פסטה'],['🐟','טונה'],['🥒','מלפפון'],['🥚','ביצה'],['🌽','תירס'],['🫒','זיתים'],['🧀','גבינה'],['🍇','ענבים']];
-const goals=[['⏱️','מהיר'],['❤️','שהיא תאכל'],['🥦','תזונה טובה'],['💰','חסכוני'],['❄️','הכנה מראש'],['🔄','גיוון']];
-function render(id,data){document.getElementById(id).innerHTML=data.map(x=>`<button class="choice" data-v="${x[1]}" onclick="this.classList.toggle('sel')"><strong>${x[0]}</strong>${x[1]}</button>`).join('')}
-render('ingredients',foods);render('prefgrid',prefs);render('goalgrid',goals);
-const days=[['א׳','🍝 פסטה + גבינה','🥒 מלפפון · 🍇 ענבים'],['ב׳','🥪 טוסט','🫒 זיתים · 🍅 עגבניות שרי'],['ג׳','🐟 קציצות טונה','🍠 בטטה · 🫘 שעועית'],['ד׳','🌽 פשטידת תירס','🫑 פלפל · 🍓 תותים'],['ה׳','🫒 פשטידת זיתים','🥕 גזר · 🍐 אגס']];
-document.getElementById('weekList').innerHTML=days.map(d=>`<div class="weekrow"><div class="day">${d[0]}</div><div><b>${d[1]}</b><br><span class="muted">${d[2]}</span></div><button onclick="toast('היום הוחלף')">↻</button></div>`).join('');
-function show(id){document.querySelectorAll('.view').forEach(x=>x.classList.remove('active'));document.getElementById(id).classList.add('active');scrollTo(0,0)}
-function toast(t){let x=document.getElementById('toast');x.textContent=t;x.style.display='block';clearTimeout(window.tt);window.tt=setTimeout(()=>x.style.display='none',2300)}
-function complete(b){b.textContent='✓';b.style.background='#dff0e5';toast('נשמר ✓')}
-function openModal(){document.getElementById('modal').style.display='flex'}function closeModal(){document.getElementById('modal').style.display='none'}
-const store={
-  load(){try{return JSON.parse(localStorage.getItem('box.v1'))||{}}catch(e){return {}}},
-  save(){try{localStorage.setItem('box.v1',JSON.stringify(state))}catch(e){}}
-};
-const state=Object.assign({name:'',likes:['פסטה','מלפפון','ביצה','תירס','זיתים','גבינה','ענבים'],blocked:['פול'],box:0,goals:[],onboarded:false},store.load());
-const recipes=[
- {t:'פסטה + גבינה + ביצה',e:'🍝🥚🥒🍇',ing:['פסטה','גבינה','ביצים'],min:8,side:['מלפפון','פרי']},
- {t:'חביתה בפיתה',e:'🥚🥙🥕🍓',ing:['ביצים','פיתה'],min:6,side:['גזר','תותים']},
- {t:'קציצות טונה + בטטה',e:'🐟🍠🥒',ing:['טונה','בטטה'],min:10,side:['מלפפון']},
- {t:'פסטה עם תירס וגבינה',e:'🍝🌽🧀',ing:['פסטה','תירס','גבינה'],min:8,side:['ענבים']},
- {t:'כריך גבינה + מלפפון',e:'🧀🥪🥒',ing:['גבינה','לחם','מלפפון'],min:4,side:['ענבים']},
- {t:'בטטה אפויה + שעועית',e:'🍠🫘',ing:['בטטה','שעועית'],min:12,side:['מלפפון']}
-];
-function esc(t){return String(t).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]))}
-function stem(w){w=w.trim().toLowerCase();const r=w.replace(/(ים|ות|ה|ת)$/,'');return r.length>=2?r:w}
-function isBlocked(text){const t=String(text).toLowerCase();return state.blocked.find(b=>b&&t.includes(stem(b)))}
-function blockedPills(){return state.blocked.map((b,i)=>`<span class="pill">🚫 ${esc(b)} <b onclick="removeBlock(${i})" style="cursor:pointer;padding:0 4px">✕</b></span>`).join('')||'<span class="muted">אין חסימות</span>'}
-function renderProfile(){
-  document.getElementById('likesList').innerHTML=state.likes.map(l=>`<span class="pill">${esc(l)}</span>`).join('')||'<span class="muted">עדיין לא נבחרו</span>';
-  document.getElementById('blockedList').innerHTML=blockedPills();
-  document.getElementById('obBlocked').innerHTML=blockedPills();
-  if(state.name)document.getElementById('childBadge').textContent='👧 '+state.name;
-}
-function addBlock(inputId){
-  const el=document.getElementById(inputId),v=el.value.trim();
-  if(!v)return;
-  if(state.blocked.some(b=>b.toLowerCase()===v.toLowerCase())){toast('כבר חסום');return}
-  state.blocked.push(v);el.value='';store.save();renderProfile();toast('נחסם: '+v);
-}
-function removeBlock(i){const b=state.blocked.splice(i,1)[0];store.save();renderProfile();toast('החסימה הוסרה: '+b)}
-function choose(v,ing){const b=isBlocked(v+' '+(ing||[]).join(' '));if(b){toast('🚫 לא מוצע: מכיל "'+b+'" (חסום)');return}toast('נבחרה '+v)}
-function swap(v,ing){const b=isBlocked(v+' '+(ing||[]).join(' '));if(b){toast('🚫 לא ניתן להחליף: מכיל "'+b+'" (חסום)');return}toast('הוחלף ל־'+v);closeModal()}
-function build(){
-  const picked=[...document.querySelectorAll('#ingredients .choice.sel')].map(x=>x.dataset.v);
-  const free=document.getElementById('free').value.trim();
-  const have=picked.concat(free.split(/[,،]/).map(x=>x.trim()).filter(Boolean));
-  const hit=isBlocked(free);
-  if(hit){toast('🚫 "'+hit+'" חסום ולא ייכלל בקופסה')}
-  const usable=have.filter(h=>!isBlocked(h));
-  const score=r=>r.ing.filter(i=>usable.some(h=>h.includes(i)||i.includes(h))).length/r.ing.length;
-  const ok=recipes.filter(r=>!isBlocked(r.t+' '+r.ing.join(' ')+' '+r.side.join(' ')));
-  const best=ok.map(r=>[r,score(r)]).sort((a,b)=>b[1]-a[1])[0];
-  const out=document.getElementById('result');
-  if(!usable.length||!best||best[1]===0){out.innerHTML='<div class="card"><h2>לא מצאתי התאמה</h2><p class="muted">סמנו עוד מצרכים או כתבו מה יש בבית.</p></div>';return}
-  const r=best[0];
-  out.innerHTML=`<div class="card"><h2>💡 מצאתי משהו טוב</h2><div class="photo">${r.e}</div><h2>${esc(r.t)}</h2><div class="pills">${r.side.map(x=>`<span class="pill">${esc(x)}</span>`).join('')}<span class="pill">⏱️ כ־${r.min} דקות</span></div><p class="muted">הרכב פשוט סביב מצרכים זמינים${best[1]<1?' (חסרים חלק מהמצרכים)':''}, בלי מזונות חסומים.</p><button class="primary" onclick="show('prepare')">יאללה, מכינים</button></div>`;
-}
-function ob(n){for(let i=1;i<=5;i++)document.getElementById('ob'+i).style.display=i===n?'block':'none';document.getElementById('bar').style.width=(n*20)+'%'}
-function pick(el){el.parentElement.querySelectorAll('.choice').forEach(x=>x.classList.remove('sel'));el.classList.add('sel')}
-function selected(id){return[...document.querySelectorAll('#'+id+' .choice.sel')].map(x=>x.dataset.v)}
-function finish(){
-  state.name=document.getElementById('name').value.trim()||'הילד/ה';
-  state.likes=selected('prefgrid');
-  state.goals=selected('goalgrid').slice(0,3);
-  state.onboarded=true;store.save();renderProfile();
-  toast('מעולה ❤️');setTimeout(()=>show('home'),400);
-}
-document.getElementById('name').value=state.name||document.getElementById('name').value;
-document.querySelectorAll('#prefgrid .choice').forEach(b=>{if(state.likes.includes(b.dataset.v))b.classList.add('sel')});
-renderProfile();
-if(!state.onboarded){show('onboard');ob(1)}
-</script>
+<script src="data/recipes.js"></script>
+<script src="data/safety.js"></script>
+<script src="engine.js"></script>
+<script src="app.js"></script>
 </div>
 </body>
 </html>
