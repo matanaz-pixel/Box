@@ -17,7 +17,7 @@ import { plantRoutes } from "./routes/plants.ts";
 import { HttpError } from "./util.ts";
 
 export async function buildApp(cfg: Config, db: Db, model: PlantModel = createModel(cfg)) {
-  const app = Fastify({ logger: false, bodyLimit: 12 * 1024 * 1024, trustProxy: true });
+  const app = Fastify({ logger: false, bodyLimit: 12 * 1024 * 1024, trustProxy: cfg.isProd });
   await app.register(cors, { origin: cfg.corsOrigin });
   await app.register(rateLimit, { max: 300, timeWindow: "1 minute", errorResponseBuilder: () => ({ statusCode: 429, error: { code: "rate_limited", message_he: he.rateLimited } }) });
 

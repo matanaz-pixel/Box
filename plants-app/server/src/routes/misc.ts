@@ -12,11 +12,11 @@ export function miscRoutes(app: FastifyInstance, { db, cfg }: Deps) {
     const rows = await db.all<any>(
       `select c.*, p.nickname, p.common_name_he, p.cover_photo_id from care_tasks c join plants p on p.id = c.plant_id
        where c.user_id = ? and c.done_at is null order by c.due_date`, [req.userId]);
-    const week = addDays(t, 7);
+    const horizon = addDays(t, 30);
     return {
       overdue: rows.filter((r) => r.due_date < t),
       today: rows.filter((r) => r.due_date === t),
-      upcoming: rows.filter((r) => r.due_date > t && r.due_date <= week),
+      upcoming: rows.filter((r) => r.due_date > t && r.due_date <= horizon),
     };
   });
 
