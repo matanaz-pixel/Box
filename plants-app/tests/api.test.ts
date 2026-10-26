@@ -17,7 +17,8 @@ async function register(email: string) {
 }
 
 beforeEach(async () => {
-  const db = await openDb({ databaseUrl: null, sqlitePath: ":memory:" });
+  const db = await openDb({ databaseUrl: process.env.TEST_DATABASE_URL ?? null, sqlitePath: ":memory:" });
+  if (process.env.TEST_DATABASE_URL) for (const t of ["growth_entries","diagnoses","care_tasks","photos","plants","profiles","users"]) await db.run(`delete from ${t}`);
   app = await buildApp(cfg, db, new MockModel());
 });
 
@@ -127,5 +128,16 @@ describe("מאגר צמחים ומשימות", () => {
     const put = await app.inject({ method: "PUT", url: "/api/profile", headers: h, payload: { home: { light: "bright", humidity: "low", temperature_c: 30 } } });
     expect(put.statusCode).toBe(200);
     expect((await app.inject({ url: "/api/profile", headers: h })).json().home.light).toBe("bright");
+  });
+});
+
+describe("קוד הרשמה", () => {
+  it("דורש קוד כשהוגדר", async () => {
+    const db = await openDb({ databaseUrl: null, sqlitePath: ":memory:" });
+    const a = await buildApp({ ...cfg, signupCode: "sesame" }, db, new MockModel());
+    const bad = await a.inject({ method: "POST", url: "/api/auth/register", payload: { email: "x@y.com", password: "password123" } });
+    expect(bad.statusCode).toBe(403);
+    const ok = await a.inject({ method: "POST", url: "/api/auth/register", payload: { email: "x@y.com", password: "password123", code: "sesame" } });
+    expect(ok.statusCode).toBe(200);
   });
 });

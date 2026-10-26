@@ -11,6 +11,8 @@ export function authRoutes(app: FastifyInstance, { cfg, db }: Deps) {
   app.post("/api/auth/register", rl, async (req, reply) => {
     const b = body.safeParse(req.body);
     if (!b.success) return reply.code(400).send({ error: { code: "bad_request", message_he: "אימייל או סיסמה לא תקינים (סיסמה: לפחות 8 תווים)." } });
+    if (cfg.signupCode && (req.body as any)?.code !== cfg.signupCode)
+      return reply.code(403).send({ error: { code: "bad_code", message_he: "קוד ההרשמה שגוי." } });
     if (await db.get("select 1 as x from users where email = ?", [b.data.email]))
       return reply.code(409).send({ error: { code: "exists", message_he: "האימייל כבר רשום." } });
     const id = uid();

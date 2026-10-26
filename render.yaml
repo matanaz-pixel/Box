@@ -1,0 +1,24 @@
+# Render Blueprint: שירות Node יחיד שמגיש את ה-PWA ואת ה-API.
+services:
+  - type: web
+    name: my-jungle
+    runtime: node
+    plan: free
+    rootDir: plants-app
+    buildCommand: npm install --include=dev && npm run build
+    startCommand: npm start
+    healthCheckPath: /api/health
+    autoDeployTrigger: commit
+    envVars:
+      - key: NODE_VERSION
+        value: 22.12.0
+      - key: JWT_SECRET
+        generateValue: true
+      - key: DATABASE_URL
+        sync: false
+      - key: ANTHROPIC_API_KEY
+        sync: false
+      - key: SIGNUP_CODE
+        sync: false
+      - key: MODEL_ID
+        value: claude-opus-5-5

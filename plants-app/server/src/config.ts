@@ -8,6 +8,7 @@ export interface Config {
   sqlitePath: string;
   jwtSecret: string;
   vapid: { publicKey: string; privateKey: string; subject: string } | null;
+  signupCode: string | null;
   isProd: boolean;
   corsOrigin: string | boolean;
 }
@@ -31,6 +32,7 @@ export function loadConfig(env: NodeJS.ProcessEnv = process.env): Config {
     sqlitePath: env.SQLITE_PATH || "./data/dev.db",
     jwtSecret,
     vapid,
+    signupCode: env.SIGNUP_CODE || null,
     isProd,
     corsOrigin: env.CORS_ORIGIN ?? !isProd,
   };

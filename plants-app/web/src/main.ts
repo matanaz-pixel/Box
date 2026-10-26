@@ -57,6 +57,7 @@ function viewLogin(mode: "login" | "register" = "login", error = "") {
     <form class="card" data-form="auth" data-mode="${mode}">
       <label for="em">אימייל</label><input id="em" name="email" type="email" autocomplete="email" required dir="ltr" />
       <label for="pw">סיסמה (לפחות 8 תווים)</label><input id="pw" name="password" type="password" minlength="8" autocomplete="${mode === "login" ? "current-password" : "new-password"}" required dir="ltr" />
+      ${mode === "register" ? `<label for="cd">קוד הרשמה (אם הוגדר)</label><input id="cd" name="code" autocomplete="off" dir="ltr" />` : ""}
       <p></p><button class="primary block" type="submit">${mode === "login" ? "התחברות" : "הרשמה"}</button>
     </form>
     <button class="block" data-a="auth-toggle" data-mode="${mode === "login" ? "register" : "login"}">${mode === "login" ? "אין חשבון? הרשמה" : "יש חשבון? התחברות"}</button></main>`;
@@ -258,7 +259,7 @@ document.addEventListener("submit", async (ev) => {
   await guardBtn(btn, async () => {
     if (kind === "auth") {
       try {
-        const r = await api("POST", `/api/auth/${f.dataset.mode}`, { email: fd.get("email"), password: fd.get("password") });
+        const r = await api("POST", `/api/auth/${f.dataset.mode}`, { email: fd.get("email"), password: fd.get("password"), code: fd.get("code") || undefined });
         setToken(r.token); profile = {}; location.hash = "#/today"; if (location.hash === "#/today") route();
       } catch (e) { viewLogin(f.dataset.mode as any, errMsg(e)); }
     } else if (kind === "add-plant") {
